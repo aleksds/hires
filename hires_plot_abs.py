@@ -24,7 +24,7 @@ def plot_profile(wave, flux, line, name):
     vel_aas = (wave - line*(1+zem[i])) / (line*(1+zem[i])) * c
     # convert to [km / s]
     vel_kms = vel_aas.to('km/s')
-    # define parameters for x and y axes
+    # define parameters for the x and y axes
     ax.set_xlim(xmin, xmax)
     ax.xaxis.set_minor_locator(minorLocator)
     ax.tick_params(axis='x', labelsize=xls)
@@ -59,9 +59,10 @@ lines = [mgi2852, mgii2803, mgii2796, feii2600, feii2586, feii2382, feii2374, fe
 names = ['Mg I 2852', 'Mg II 2803', 'Mg II 2796', 'Fe II 2600', 'Fe II 2586', 'Fe II 2382', 'Fe II 2374', 'Fe II 2344']
 
 # arrays of galaxy names, redshifts, approximate centroid velocities
-gal = ['J0826', 'J0901', 'J0905', 'J0944', 'J1125', 'J1219', 'J1232', 'J1341', 'J1450', 'J1506', 'J1558', 'J1613', 'J1713', 'J2116', 'J2140']
-zem = np.array([0.603, 0.459, 0.712, 0.514, 0.519, 0.451, 0.400, 0.658, 0.782, 0.608, 0.402, 0.449, 0.577, 0.728, 0.752])
-vcen = np.array([-1250., -1330., -2570., -1240., -2130., -1950., -550., -390., -1790., -1110., -900., -2450., -868., -1480., -770.])
+gal_info = ascii.read(dir+'gal_info.txt')
+gal = gal_info['gal']
+zem = gal_info['zem']
+vcen = gal_info['vcen']
 
 # set relevant parameters for the figure
 filename = 'all_abs.pdf'
