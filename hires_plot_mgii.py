@@ -22,6 +22,20 @@ from astropy import constants as const
 from astropy.io import ascii
 from matplotlib.ticker import AutoMinorLocator
 
+# define a function to set plot parameters
+def plot_setup():
+    ax.set_xlim(xmin, xmax)
+    ax.xaxis.set_minor_locator(minorLocator)
+    ax.set_ylim(0., 1.5)
+    ax.tick_params(axis='x', labelsize=xls)
+    ax.tick_params(axis='y', labelsize=yls)
+
+# define a function to mark the centroid velocity
+def plot_vline():
+    plt.axvline(x=vcen[i], ymin=0., ymax = 1.5, linewidth=1, color='k', linestyle='dotted')
+    plt.axvline(x=vcen[i]+30., ymin=0., ymax = 1.5, linewidth=0.5, color='k')
+    plt.axvline(x=vcen[i]-30., ymin=0., ymax = 1.5, linewidth=0.5, color='k')
+
 # define the data directory
 dir = os.environ['HIRESDIR']
 
@@ -52,6 +66,7 @@ vr = 1500. * u.km / u.s
 # make plot showing one galaxy per page
 filename = 'all_mgii.pdf'
 xls = 7.
+yls = 10.
 minorLocator = AutoMinorLocator()
 
 with PdfPages(filename) as pdf:
@@ -78,60 +93,37 @@ with PdfPages(filename) as pdf:
 
         # show the profile in 2796 velocity units
         ax = fig.add_subplot(4,1,1)
-        ax.set_xlim(xmin, xmax)
-        ax.xaxis.set_minor_locator(minorLocator)
-        ax.set_ylim(0., 1.5)
-        ax.tick_params(axis='x', labelsize=xls)
+        plot_setup()
         ax.plot(vel_mgii_2796, flux)
         plt.text(xmin+0.03*(xmax-xmin), 0.15, 'MgII 2796', color='blue')
-        plt.axvline(x=vcen[i], ymin=0., ymax = 1.5, linewidth=1, color='k', linestyle='dotted')
-        plt.axvline(x=vcen[i]+30., ymin=0., ymax = 1.5, linewidth=0.5, color='k')
-        plt.axvline(x=vcen[i]-30., ymin=0., ymax = 1.5, linewidth=0.5, color='k')
+        plot_vline()
 
         # show the profile in 2803 velocity units
         ax = fig.add_subplot(4,1,2)
-        ax.set_xlim(xmin, xmax)
-        ax.xaxis.set_minor_locator(minorLocator)
-        ax.set_ylim(0., 1.5)
-        ax.tick_params(axis='x', labelsize=xls)
+        plot_setup()
         ax.plot(vel_mgii_2803, flux, color='red')
         plt.text(xmin+0.03*(xmax-xmin), 0.15, 'MgII 2803', color='black')
-        plt.axvline(x=vcen[i], ymin=0., ymax = 1.5, linewidth=1, color='k', linestyle='dotted')
-        plt.axvline(x=vcen[i]+30., ymin=0., ymax = 1.5, linewidth=0.5, color='k')
-        plt.axvline(x=vcen[i]-30., ymin=0., ymax = 1.5, linewidth=0.5, color='k')
+        plot_vline()
 
         # show the profile in both 2796 and 2803 velocity units
         ax = fig.add_subplot(4,1,3)
-        ax.set_xlim(xmin, xmax)
-        ax.xaxis.set_minor_locator(minorLocator)
-        ax.set_ylim(0., 1.5)
-        ax.tick_params(axis='x', labelsize=xls)
+        plot_setup()
         ax.plot(vel_mgii_2803, flux, color='red')
         ax.plot(vel_mgii_2796, flux, color='blue')
         plt.text(xmin+0.03*(xmax-xmin), 0.15, 'MgII 2796+2803')
-        plt.axvline(x=vcen[i], ymin=0., ymax = 1.5, linewidth=1, color='k', linestyle='dotted')
-        plt.axvline(x=vcen[i]+30., ymin=0., ymax = 1.5, linewidth=0.5, color='k')
-        plt.axvline(x=vcen[i]-30., ymin=0., ymax = 1.5, linewidth=0.5, color='k')
+        plot_vline()
 
         # show the velocity profile using the 2796 line on the blue
         # side and the 2803 line on the red side
-        #g2796 = (vel_mgii_2796 > vra[i,0]) & (vel_mgii_2796 < vra[i,1])
         g2796 = (vel_mgii_2796 > vb) & (vel_mgii_2796 < vflip[i])
-        #g2803 = (vel_mgii_2803 > vra[i,1]) & (vel_mgii_2803 < vra[i,2])
         g2803 = (vel_mgii_2803 > vflip[i]) & (vel_mgii_2796 < vr)
         ax = fig.add_subplot(4,1,4)
-        ax.set_xlim(xmin, xmax)
-        ax.xaxis.set_minor_locator(minorLocator)
-        ax.set_ylim(0., 1.5)
-        ax.tick_params(axis='x', labelsize=xls)
+        plot_setup()
         ax.plot(vel_mgii_2803[g2803], flux[g2803], color='red')
         ax.plot(vel_mgii_2796[g2796], flux[g2796], color='blue')
         plt.text(xmin+0.03*(xmax-xmin), 0.15, 'MgII 2796+2803')
-        plt.axvline(x=vcen[i], ymin=0., ymax = 1.5, linewidth=1, color='k', linestyle='dotted')
-        plt.axvline(x=vcen[i]+30., ymin=0., ymax = 1.5, linewidth=0.5, color='k')
-        plt.axvline(x=vcen[i]-30., ymin=0., ymax = 1.5, linewidth=0.5, color='k')
+        plot_vline()
         
-
         pdf.savefig()
         plt.close()
     
@@ -166,11 +158,7 @@ with PdfPages(filename) as pdf:
 
         # plot the profiles using the 2796 velocity scale
         ax = fig.add_subplot(5,3,i+1)
-        ax.set_xlim(xmin, xmax)
-        ax.xaxis.set_minor_locator(minorLocator)
-        ax.set_ylim(0., 1.5)
-        ax.tick_params(axis='x', labelsize=xls)
-        ax.tick_params(axis='y', labelsize=yls)
+        plot_setup()
         ax.plot(vel_mgii_2796, flux, color='black', linewidth=0.5)
         plt.text(xmin+0.03*(xmax-xmin), 0.15, gal[indx])
 
@@ -198,19 +186,13 @@ with PdfPages(filename) as pdf:
         vel_mgii_2796 = vel_mgii_2796_aa.to('km/s')
 
         # define the regions to use the 2796 profile and the regions to use the 2803 profile
-        #g2796 = (vel_mgii_2796 > vra[indx,0]) & (vel_mgii_2796 < vra[indx,1])
         g2796 = (vel_mgii_2796 > vb) & (vel_mgii_2796 < vflip[indx])
-        #g2803 = (vel_mgii_2803 > vra[indx,1]) & (vel_mgii_2803 < vra[indx,2])
         g2803 = (vel_mgii_2803 > vflip[indx]) & (vel_mgii_2803 < vr)
 
         # plot the profiles using the 2796 profile on the blue side
         # and the 2803 profile on the red side
         ax = fig.add_subplot(5,3,i+1)
-        ax.set_xlim(xmin, xmax)
-        ax.xaxis.set_minor_locator(minorLocator)
-        ax.set_ylim(0., 1.5)
-        ax.tick_params(axis='x', labelsize=xls)
-        ax.tick_params(axis='y', labelsize=yls)
+        plot_setup()
         ax.plot(vel_mgii_2803[g2803], flux[g2803], color='red', linewidth=0.5)
         ax.plot(vel_mgii_2796[g2796], flux[g2796], color='blue', linewidth=0.5)
         plt.text(xmin+0.03*(xmax-xmin), 0.15, gal[indx])
