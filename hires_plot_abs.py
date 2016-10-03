@@ -1,5 +1,5 @@
 # Aleks Diamond-Stanic
-# 20160516 --> 20160929
+# 20160516 --> 20161003
 #
 # The main goal of this code is to make plots of relevant Mg and Fe
 # absorption lines 
@@ -37,7 +37,12 @@ def plot_profile(wave, flux, line, name):
     plt.axvline(x=vcen[i], ymin=0., ymax = 1.5, linewidth=1, color='k', linestyle='dotted')
     plt.axvline(x=vcen[i]+30., ymin=0., ymax = 1.5, linewidth=0.5, color='k')
     plt.axvline(x=vcen[i]-30., ymin=0., ymax = 1.5, linewidth=0.5, color='k')
-
+    # label other lines for clarity
+    for k in range(0, len(lines)):
+        vel_off_aas = (lines[k] - line) / line * c
+        vel_off_kms = vel_off_aas.to('km/s') / (u.km / u.s)
+        plt.axvline(x=vcen[i]+vel_off_kms, ymin=0., ymax = 1.5, linewidth=1, color='k', linestyle='dotted')
+            
 # define the data directory
 dir = os.environ['HIRESDIR']
 
@@ -55,8 +60,8 @@ feii2374 = 2374.4603294 * u.AA
 feii2344 = 2344.2129601 * u.AA
 
 # arrays of line wavelengths and names
-lines = [mgi2852, mgii2803, mgii2796, feii2600, feii2586, feii2382, feii2374, feii2344]
-names = ['Mg I 2852', 'Mg II 2803', 'Mg II 2796', 'Fe II 2600', 'Fe II 2586', 'Fe II 2382', 'Fe II 2374', 'Fe II 2344']
+lines = [mgii2796, mgii2803, feii2586, feii2600, feii2374, feii2382, feii2344, mgi2852]
+names = ['Mg II 2796', 'Mg II 2803', 'Fe II 2586', 'Fe II 2600', 'Fe II 2374', 'Fe II 2382', 'Fe II 2344', 'Mg I 2852']
 
 # arrays of galaxy names, redshifts, approximate centroid velocities
 gal_info = ascii.read(dir+'gal_info.txt')
